@@ -29,10 +29,14 @@ Add these in **Settings → Secrets and variables → Actions** on the GitHub re
 
 ## Release Workflow
 
-| Channel | Trigger | npm tag | Version format |
-|---|---|---|---|
-| **beta** | Push to `main` | `beta` | `{version}-beta.{sha}` |
-| **pr** | PR commit | `pr-{N}` | `{version}-pr-{N}.{sha}` |
-| **stable** | Manual dispatch | `latest` | `{version}` |
+| Channel | Trigger | npm tag | crates.io | Version format |
+|---|---|---|---|---|
+| **beta** | Push to `main` | `beta` | Yes (via release-plz) | `{version}-beta.{sha}` |
+| **pr** | PR commit | `pr-{N}` | No | `{version}-pr-{N}.{sha}` |
+| **stable** | Manual dispatch | `latest` | Yes (via release-plz) | `{version}` |
 
 Version is read from `Cargo.toml` (managed by release-plz via conventional commits).
+
+### Why no crates.io for PRs?
+
+crates.io versions are permanent — you can't delete them, only yank. Publishing a crate for every PR commit would pollute the version history. npm has dist-tags so pre-releases are only visible when explicitly requested.
