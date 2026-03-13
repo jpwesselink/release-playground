@@ -33,9 +33,17 @@ Add these in **Settings → Secrets and variables → Actions** on the GitHub re
 |---|---|---|---|---|
 | **beta** | Push to `main` | `beta` | Yes (via release-plz) | `{version}-beta.{sha}` |
 | **pr** | PR commit | `pr-{N}` | No | `{version}-pr-{N}.{sha}` |
-| **stable** | Manual dispatch | `latest` | Yes (via release-plz) | `{version}` |
+| **stable** | release-plz release (or manual dispatch) | `latest` | Yes (via release-plz) | `{version}` |
 
 Version is read from `Cargo.toml` (managed by release-plz via conventional commits).
+
+### Stable release flow
+
+1. Conventional commits land on `main`
+2. release-plz opens a "chore: release" PR with bumped versions
+3. You merge the PR
+4. release-plz publishes to crates.io and creates a GitHub release
+5. The GitHub release automatically triggers the npm stable publish (`latest` tag)
 
 ### Why no crates.io for PRs?
 
