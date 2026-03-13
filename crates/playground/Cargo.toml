@@ -2,6 +2,8 @@
 name = "release-playground"
 version = "0.1.0"
 edition = "2021"
+description = "CLI for release-playground"
+license = "MIT"
 
 [dependencies]
 release-playground-lib = { path = "../playground-lib", version = "0.1.0" }

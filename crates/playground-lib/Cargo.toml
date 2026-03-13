@@ -2,3 +2,5 @@
 name = "release-playground-lib"
 version = "0.1.0"
 edition = "2021"
+description = "Library for release-playground"
+license = "MIT"
