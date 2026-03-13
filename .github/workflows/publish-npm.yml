@@ -1,0 +1,155 @@
+name: Publish to NPM
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 1.0.0)'
+        required: true
+
+jobs:
+  resolve-version:
+    name: Resolve version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      npm-tag: ${{ steps.version.outputs.npm-tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine version
+        id: version
+        shell: bash
+        run: |
+          CARGO_VERSION=$(grep '^version' crates/playground/Cargo.toml | head -1 | sed 's/.*"\(.*\)"/\1/')
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            PR_NUM=${{ github.event.pull_request.number }}
+            SHORT_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-7)
+            echo "version=${CARGO_VERSION}-pr-${PR_NUM}.${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+            echo "npm-tag=pr-${PR_NUM}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            echo "version=${CARGO_VERSION}-beta.${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+            echo "npm-tag=beta" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+            echo "npm-tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Print version
+        run: |
+          echo "Version: ${{ steps.version.outputs.version }}"
+          echo "NPM tag: ${{ steps.version.outputs.npm-tag }}"
+
+  build:
+    name: Build ${{ matrix.npm_pkg }}
+    needs: resolve-version
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            runner: ubuntu-latest
+            npm_pkg: release-playground-linux-x64-gnu
+            binary: release-playground
+          - target: aarch64-unknown-linux-gnu
+            runner: ubuntu-latest
+            npm_pkg: release-playground-linux-arm64-gnu
+            binary: release-playground
+            cross: true
+          - target: x86_64-apple-darwin
+            runner: macos-latest
+            npm_pkg: release-playground-darwin-x64
+            binary: release-playground
+          - target: aarch64-apple-darwin
+            runner: macos-14
+            npm_pkg: release-playground-darwin-arm64
+            binary: release-playground
+          - target: x86_64-pc-windows-msvc
+            runner: windows-latest
+            npm_pkg: release-playground-win32-x64-msvc
+            binary: release-playground.exe
+          - target: aarch64-pc-windows-msvc
+            runner: windows-latest
+            npm_pkg: release-playground-win32-arm64-msvc
+            binary: release-playground.exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install cross
+        if: matrix.cross
+        run: cargo install cross --locked
+
+      - name: Build binary
+        shell: bash
+        run: |
+          if [ "${{ matrix.cross }}" = "true" ]; then
+            cross build --release --target ${{ matrix.target }} -p release-playground
+          else
+            cargo build --release --target ${{ matrix.target }} -p release-playground
+          fi
+
+      - name: Copy binary into npm package
+        shell: bash
+        run: cp target/${{ matrix.target }}/release/${{ matrix.binary }} npm/${{ matrix.npm_pkg }}/
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Set npm version
+        working-directory: npm/${{ matrix.npm_pkg }}
+        shell: bash
+        run: npm version --no-git-tag-version --allow-same-version "${{ needs.resolve-version.outputs.version }}"
+
+      - name: Publish platform package
+        working-directory: npm/${{ matrix.npm_pkg }}
+        run: npm publish --tag ${{ needs.resolve-version.outputs.npm-tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-meta:
+    name: Publish meta-package
+    needs: [resolve-version, build]
+    if: ${{ always() && needs.build.result != 'cancelled' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Set version
+        working-directory: npm/release-playground
+        shell: bash
+        run: |
+          VERSION="${{ needs.resolve-version.outputs.version }}"
+          node -e "
+            const pkg = require('./package.json');
+            pkg.version = '$VERSION';
+            for (const dep of Object.keys(pkg.optionalDependencies || {})) {
+              pkg.optionalDependencies[dep] = '$VERSION';
+            }
+            require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+      - name: Publish meta-package
+        working-directory: npm/release-playground
+        run: npm publish --tag ${{ needs.resolve-version.outputs.npm-tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

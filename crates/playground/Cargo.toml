@@ -1,0 +1,7 @@
+[package]
+name = "release-playground"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+release-playground-lib = { path = "../playground-lib" }

@@ -1,0 +1,11 @@
+{
+  "name": "@jpwesselink/release-playground-win32-x64-msvc",
+  "version": "0.1.0",
+  "description": "release-playground binary for Windows x64",
+  "os": ["win32"],
+  "cpu": ["x64"],
+  "bin": { "release-playground": "release-playground.exe" },
+  "files": ["release-playground.exe"],
+  "publishConfig": { "access": "public" },
+  "license": "MIT"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@jpwesselink/release-playground",
+  "version": "0.1.0",
+  "description": "Test release workflow",
+  "bin": {
+    "release-playground": "bin/release-playground.js"
+  },
+  "files": [
+    "bin/release-playground.js"
+  ],
+  "optionalDependencies": {
+    "@jpwesselink/release-playground-linux-x64-gnu": "0.1.0",
+    "@jpwesselink/release-playground-linux-arm64-gnu": "0.1.0",
+    "@jpwesselink/release-playground-darwin-x64": "0.1.0",
+    "@jpwesselink/release-playground-darwin-arm64": "0.1.0",
+    "@jpwesselink/release-playground-win32-x64-msvc": "0.1.0",
+    "@jpwesselink/release-playground-win32-arm64-msvc": "0.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT"
+}

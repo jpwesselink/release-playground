@@ -1,0 +1,11 @@
+{
+  "name": "@jpwesselink/release-playground-darwin-arm64",
+  "version": "0.1.0",
+  "description": "release-playground binary for macOS ARM64",
+  "os": ["darwin"],
+  "cpu": ["arm64"],
+  "bin": { "release-playground": "release-playground" },
+  "files": ["release-playground"],
+  "publishConfig": { "access": "public" },
+  "license": "MIT"
+}
