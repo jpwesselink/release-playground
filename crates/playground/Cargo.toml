@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-release-playground-lib = { path = "../playground-lib" }
+release-playground-lib = { path = "../playground-lib", version = "0.1.0" }
