@@ -8,4 +8,3 @@ version_group = "playground"
 [[package]]
 name = "release-playground-lib"
 version_group = "playground"
-publish = false
