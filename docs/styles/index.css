@@ -1,0 +1,15 @@
+:root {
+  --rp-c-brand: #ffcc00;
+  --rp-c-brand-dark: #e6b800;
+  --rp-c-brand-darker: #cc9900;
+  --rp-c-brand-light: #ffd633;
+  --rp-c-brand-lighter: #ffe066;
+}
+
+:root {
+  --rp-c-bg-brand-light: rgba(255, 204, 0, 0.14);
+}
+
+:root.dark {
+  --rp-c-bg-brand-light: rgba(255, 204, 0, 0.16);
+}

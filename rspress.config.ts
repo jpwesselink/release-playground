@@ -1,3 +1,4 @@
+import path from "node:path";
 import { defineConfig } from "@rspress/core";
 
 export default defineConfig({
@@ -5,4 +6,5 @@ export default defineConfig({
   base: "/release-playground/",
   title: "release-playground",
   description: "Multi-channel release workflow for Rust CLI + NAPI packages",
+  globalStyles: path.join(__dirname, "docs/styles/index.css"),
 });
