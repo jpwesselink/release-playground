@@ -9,14 +9,14 @@
 
 :where(html:not(.rp-dark)) {
   --rp-home-hero-title-color: #ffcc00;
-  --rp-home-hero-title-bg: none;
+  --rp-home-hero-title-bg: #ffcc00;
   --rp-home-background-bg: #fff;
   --rp-home-feature-bg: #f9f9f9;
 }
 
 :where(html.rp-dark) {
   --rp-home-hero-title-color: #ffcc00;
-  --rp-home-hero-title-bg: none;
+  --rp-home-hero-title-bg: #ffcc00;
   --rp-home-background-bg: #121212;
   --rp-home-feature-bg: #1a1a1a;
 }
