@@ -1,0 +1,12 @@
+{
+  "name": "release-playground",
+  "private": true,
+  "scripts": {
+    "dev": "rspress dev",
+    "build": "rspress build",
+    "preview": "rspress preview"
+  },
+  "devDependencies": {
+    "@rspress/core": "^2.0.5"
+  }
+}
