@@ -1,15 +1,24 @@
 :root {
   --rp-c-brand: #ffcc00;
-  --rp-c-brand-dark: #e6b800;
-  --rp-c-brand-darker: #cc9900;
   --rp-c-brand-light: #ffd633;
   --rp-c-brand-lighter: #ffe066;
+  --rp-c-brand-dark: #e6b800;
+  --rp-c-brand-darker: #cc9900;
+  --rp-c-brand-tint: rgba(255, 204, 0, 0.16);
 }
 
-:root {
-  --rp-c-bg-brand-light: rgba(255, 204, 0, 0.14);
+:where(html:not(.rp-dark)) {
+  --rp-home-hero-secondary-color: #ff9900;
+  --rp-home-hero-title-color: transparent;
+  --rp-home-hero-title-bg: linear-gradient(90deg, #cc9900 0%, #ffcc00 30%, #ff9900 100%);
+  --rp-home-background-bg: radial-gradient(42.12% 56.13% at 100% 0%, rgba(255, 204, 0, 0.1) 0%, #fff0 100%), radial-gradient(42.01% 79.63% at 52.86% 0%, rgba(255, 204, 0, 0.2) 0%, #fff0 100%), radial-gradient(79.67% 58.09% at 0% 0%, rgba(230, 184, 0, 0.2) 0%, #fff0 100%), #fff;
+  --rp-home-feature-bg: linear-gradient(135deg, #fff, #f9f9f980);
 }
 
-:root.dark {
-  --rp-c-bg-brand-light: rgba(255, 204, 0, 0.16);
+:where(html.rp-dark) {
+  --rp-home-hero-secondary-color: #ff9900;
+  --rp-home-hero-title-color: transparent;
+  --rp-home-hero-title-bg: linear-gradient(90deg, #cc9900 0%, #ffcc00 30%, #ff9900 100%);
+  --rp-home-background-bg: radial-gradient(42.12% 56.13% at 100% 0%, rgba(204, 153, 0, 0.3) 0%, #12121200 100%), radial-gradient(55.81% 87.78% at 48.37% 0%, #000 0%, #12121200 89.55%), radial-gradient(122.65% 88.24% at 0% 0%, rgba(153, 115, 0, 0.4) 0%, #12121200 100%), #121212;
+  --rp-home-feature-bg: linear-gradient(135deg, #fff0, #ffffff08);
 }
