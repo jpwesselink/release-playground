@@ -2,9 +2,9 @@
   "name": "@jpwesselink/playground-core",
   "version": "0.1.0",
   "description": "Native Node.js bindings for release-playground",
+  "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
-  "type": "commonjs",
   "napi": {
     "binaryName": "playground-core",
     "targets": [

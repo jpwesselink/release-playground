@@ -1,4 +1,9 @@
-const path = require("path");
+import { createRequire } from "node:module";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const require = createRequire(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PLATFORMS = {
   "darwin-arm64": "@jpwesselink/playground-core-darwin-arm64",
@@ -39,4 +44,5 @@ try {
   }
 }
 
-module.exports = { ...nativeModule };
+export const { greet } = nativeModule;
+export default nativeModule;
