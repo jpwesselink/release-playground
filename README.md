@@ -2,6 +2,26 @@
 
 Test repo for validating the multi-channel release workflow before applying it to production repos.
 
+## Project Structure
+
+```
+crates/
+  playground/              CLI binary
+    npm/                   CLI npm distribution (@jpwesselink/release-playground)
+  playground-core/         Shared Rust library
+  playground-napi/         NAPI-RS native Node.js bindings
+    npm/                   Core npm distribution (@jpwesselink/release-playground-core)
+```
+
+## npm Packages
+
+| Package | Type | Description |
+|---|---|---|
+| `@jpwesselink/release-playground` | CLI | Platform-specific binary, installed via `npx` |
+| `@jpwesselink/release-playground-core` | NAPI | Native Node.js bindings (ESM) |
+
+Both use the optionalDependencies pattern with platform-specific sub-packages for native binary distribution.
+
 ## Setup
 
 ### Required Secrets
@@ -36,6 +56,14 @@ Add these in **Settings → Secrets and variables → Actions** on the GitHub re
 | **stable** | release-plz release (or manual dispatch) | `latest` | Yes (via release-plz) | `{version}` |
 
 Version is read from `Cargo.toml` (managed by release-plz via conventional commits).
+
+### CI Workflows
+
+| Workflow | Description |
+|---|---|
+| **Publish CLI npm package** | Builds CLI binary for 6 platforms, publishes `@jpwesselink/release-playground` |
+| **Publish Core npm package** | Builds NAPI native module for 6 platforms, publishes `@jpwesselink/release-playground-core` |
+| **Release-plz** | Analyzes conventional commits, creates release PRs, publishes to crates.io |
 
 ### Stable release flow
 
