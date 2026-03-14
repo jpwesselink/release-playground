@@ -1,0 +1,8 @@
+{
+  "stable": [],
+  "beta": {
+    "label": "beta (0.1.1)",
+    "path": "/beta/"
+  },
+  "prs": []
+}
