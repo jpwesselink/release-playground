@@ -247,14 +247,14 @@ dependencies = [
 
 [[package]]
 name = "release-playground"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "release-playground-core",
 ]
 
 [[package]]
 name = "release-playground-core"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "release-playground-napi"

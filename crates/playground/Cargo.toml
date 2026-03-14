@@ -1,9 +1,9 @@
 [package]
 name = "release-playground"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "CLI for release-playground"
 license = "MIT"
 
 [dependencies]
-release-playground-core = { path = "../playground-core", version = "0.1.0" }
+release-playground-core = { path = "../playground-core", version = "0.1.1" }
