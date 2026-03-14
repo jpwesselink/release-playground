@@ -11,4 +11,7 @@ hero:
     - theme: alt
       text: GitHub
       link: https://github.com/jpwesselink/release-playground
+    - theme: alt
+      text: Sponsor me
+      link: https://github.com/sponsors/jpwesselink
 ---
