@@ -1,0 +1,11 @@
+{
+  "name": "@jpwesselink/playground-core-win32-arm64-msvc",
+  "version": "0.1.0",
+  "description": "playground-core native bindings for Windows ARM64",
+  "os": ["win32"],
+  "cpu": ["arm64"],
+  "main": "playground-core.node",
+  "files": ["playground-core.node"],
+  "publishConfig": { "access": "public" },
+  "license": "MIT"
+}

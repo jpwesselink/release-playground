@@ -1,0 +1,11 @@
+{
+  "name": "@jpwesselink/playground-core-darwin-x64",
+  "version": "0.1.0",
+  "description": "playground-core native bindings for macOS x64",
+  "os": ["darwin"],
+  "cpu": ["x64"],
+  "main": "playground-core.node",
+  "files": ["playground-core.node"],
+  "publishConfig": { "access": "public" },
+  "license": "MIT"
+}

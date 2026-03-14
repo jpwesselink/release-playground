@@ -1,0 +1,38 @@
+{
+  "name": "@jpwesselink/playground-core",
+  "version": "0.1.0",
+  "description": "Native Node.js bindings for release-playground",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "type": "commonjs",
+  "napi": {
+    "binaryName": "playground-core",
+    "targets": [
+      "x86_64-apple-darwin",
+      "aarch64-apple-darwin",
+      "x86_64-unknown-linux-gnu",
+      "aarch64-unknown-linux-gnu",
+      "x86_64-pc-windows-msvc",
+      "aarch64-pc-windows-msvc"
+    ]
+  },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "optionalDependencies": {
+    "@jpwesselink/playground-core-darwin-arm64": "0.1.0",
+    "@jpwesselink/playground-core-darwin-x64": "0.1.0",
+    "@jpwesselink/playground-core-linux-x64-gnu": "0.1.0",
+    "@jpwesselink/playground-core-linux-arm64-gnu": "0.1.0",
+    "@jpwesselink/playground-core-win32-x64-msvc": "0.1.0",
+    "@jpwesselink/playground-core-win32-arm64-msvc": "0.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

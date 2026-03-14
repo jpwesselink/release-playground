@@ -1,0 +1,11 @@
+{
+  "name": "@jpwesselink/playground-core-darwin-arm64",
+  "version": "0.1.0",
+  "description": "playground-core native bindings for macOS ARM64 (Apple Silicon)",
+  "os": ["darwin"],
+  "cpu": ["arm64"],
+  "main": "playground-core.node",
+  "files": ["playground-core.node"],
+  "publishConfig": { "access": "public" },
+  "license": "MIT"
+}

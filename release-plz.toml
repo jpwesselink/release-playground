@@ -6,5 +6,5 @@ name = "release-playground"
 version_group = "playground"
 
 [[package]]
-name = "release-playground-lib"
+name = "release-playground-core"
 version_group = "playground"
