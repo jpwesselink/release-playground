@@ -117,12 +117,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Set npm version
-        working-directory: npm/${{ matrix.npm_pkg }}
+        working-directory: crates/playground/npm/${{ matrix.npm_pkg }}
         shell: bash
         run: npm version --no-git-tag-version --allow-same-version "${{ needs.resolve-version.outputs.version }}"
 
       - name: Publish platform package
-        working-directory: npm/${{ matrix.npm_pkg }}
+        working-directory: crates/playground/npm/${{ matrix.npm_pkg }}
         run: npm publish --tag ${{ needs.resolve-version.outputs.npm-tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
