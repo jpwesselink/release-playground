@@ -12,7 +12,7 @@ crate-type = ["cdylib"]
 [dependencies]
 napi = { version = "3", default-features = false, features = ["napi9"] }
 napi-derive = "3"
-release-playground-core = { path = "../playground-core", version = "0.1.0" }
+release-playground-core = { path = "../playground-core", version = "0.1.1" }
 
 [build-dependencies]
 napi-build = "2"
