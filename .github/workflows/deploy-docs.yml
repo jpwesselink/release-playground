@@ -3,23 +3,23 @@ name: Deploy docs
 on:
   push:
     branches: [main]
-    paths:
-      - "docs/**"
-      - "rspress.config.ts"
-      - "package.json"
+  pull_request:
+    types: [opened, synchronize, closed]
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
+  pull-requests: write
 
 concurrency:
-  group: pages
+  group: docs-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,21 +32,55 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Determine deploy target
+        id: target
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "subdir=pr-${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            echo "base=/release-playground/pr-${{ github.event.pull_request.number }}/" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "release" ]; then
+            echo "subdir=" >> "$GITHUB_OUTPUT"
+            echo "base=/release-playground/" >> "$GITHUB_OUTPUT"
+          else
+            echo "subdir=beta" >> "$GITHUB_OUTPUT"
+            echo "base=/release-playground/beta/" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build docs
-        run: npx rspress build
+        run: |
+          # Override base path for this deploy target
+          sed -i "s|base: \"/release-playground/\"|base: \"${{ steps.target.outputs.base }}\"|" rspress.config.ts
+          npx rspress build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: doc_build
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./doc_build
+          destination_dir: ${{ steps.target.outputs.subdir }}
+          keep_files: true
 
-  deploy:
-    needs: build
+      - name: Comment PR with docs link
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: docs-preview
+          message: |
+            📖 Docs preview: https://jpwesselink.github.io/release-playground/pr-${{ github.event.pull_request.number }}/
+
+  cleanup:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Remove PR docs
+        run: |
+          rm -rf pr-${{ github.event.pull_request.number }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "docs: remove pr-${{ github.event.pull_request.number }} preview"
+          git push
