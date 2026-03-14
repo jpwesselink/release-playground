@@ -1,12 +1,12 @@
 {
-  "name": "@jpwesselink/playground-core",
+  "name": "@jpwesselink/release-playground-core",
   "version": "0.1.0",
   "description": "Native Node.js bindings for release-playground",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
-    "binaryName": "playground-core",
+    "binaryName": "release-playground-core",
     "targets": [
       "x86_64-apple-darwin",
       "aarch64-apple-darwin",
@@ -21,12 +21,12 @@
     "index.d.ts"
   ],
   "optionalDependencies": {
-    "@jpwesselink/playground-core-darwin-arm64": "0.1.0",
-    "@jpwesselink/playground-core-darwin-x64": "0.1.0",
-    "@jpwesselink/playground-core-linux-x64-gnu": "0.1.0",
-    "@jpwesselink/playground-core-linux-arm64-gnu": "0.1.0",
-    "@jpwesselink/playground-core-win32-x64-msvc": "0.1.0",
-    "@jpwesselink/playground-core-win32-arm64-msvc": "0.1.0"
+    "@jpwesselink/release-playground-core-darwin-arm64": "0.1.0",
+    "@jpwesselink/release-playground-core-darwin-x64": "0.1.0",
+    "@jpwesselink/release-playground-core-linux-x64-gnu": "0.1.0",
+    "@jpwesselink/release-playground-core-linux-arm64-gnu": "0.1.0",
+    "@jpwesselink/release-playground-core-win32-x64-msvc": "0.1.0",
+    "@jpwesselink/release-playground-core-win32-arm64-msvc": "0.1.0"
   },
   "publishConfig": {
     "access": "public"

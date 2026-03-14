@@ -61,23 +61,23 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-latest
-            npm_pkg: playground-core-linux-x64-gnu
+            npm_pkg: release-playground-core-linux-x64-gnu
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-latest
-            npm_pkg: playground-core-linux-arm64-gnu
+            npm_pkg: release-playground-core-linux-arm64-gnu
             cross: true
           - target: x86_64-apple-darwin
             runner: macos-latest
-            npm_pkg: playground-core-darwin-x64
+            npm_pkg: release-playground-core-darwin-x64
           - target: aarch64-apple-darwin
             runner: macos-14
-            npm_pkg: playground-core-darwin-arm64
+            npm_pkg: release-playground-core-darwin-arm64
           - target: x86_64-pc-windows-msvc
             runner: windows-latest
-            npm_pkg: playground-core-win32-x64-msvc
+            npm_pkg: release-playground-core-win32-x64-msvc
           - target: aarch64-pc-windows-msvc
             runner: windows-latest
-            npm_pkg: playground-core-win32-arm64-msvc
+            npm_pkg: release-playground-core-win32-arm64-msvc
     steps:
       - uses: actions/checkout@v4
 
@@ -103,11 +103,11 @@ jobs:
         shell: bash
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
-            cp target/${{ matrix.target }}/release/release_playground_napi.dll crates/playground-napi/npm/${{ matrix.npm_pkg }}/playground-core.node
+            cp target/${{ matrix.target }}/release/release_playground_napi.dll crates/playground-napi/npm/${{ matrix.npm_pkg }}/release-playground-core.node
           elif [ "${{ runner.os }}" = "macOS" ]; then
-            cp target/${{ matrix.target }}/release/librelease_playground_napi.dylib crates/playground-napi/npm/${{ matrix.npm_pkg }}/playground-core.node
+            cp target/${{ matrix.target }}/release/librelease_playground_napi.dylib crates/playground-napi/npm/${{ matrix.npm_pkg }}/release-playground-core.node
           else
-            cp target/${{ matrix.target }}/release/librelease_playground_napi.so crates/playground-napi/npm/${{ matrix.npm_pkg }}/playground-core.node
+            cp target/${{ matrix.target }}/release/librelease_playground_napi.so crates/playground-napi/npm/${{ matrix.npm_pkg }}/release-playground-core.node
           fi
 
       - name: Setup Node.js
@@ -128,7 +128,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-meta:
-    name: Publish @jpwesselink/playground-core
+    name: Publish @jpwesselink/release-playground-core
     needs: [resolve-version, build]
     if: ${{ always() && needs.build.result != 'cancelled' }}
     runs-on: ubuntu-latest

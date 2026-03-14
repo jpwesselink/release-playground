@@ -1,11 +1,11 @@
 {
-  "name": "@jpwesselink/playground-core-win32-x64-msvc",
+  "name": "@jpwesselink/release-playground-core-win32-x64-msvc",
   "version": "0.1.0",
   "description": "playground-core native bindings for Windows x64",
   "os": ["win32"],
   "cpu": ["x64"],
-  "main": "playground-core.node",
-  "files": ["playground-core.node"],
+  "main": "release-playground-core.node",
+  "files": ["release-playground-core.node"],
   "publishConfig": { "access": "public" },
   "license": "MIT"
 }
