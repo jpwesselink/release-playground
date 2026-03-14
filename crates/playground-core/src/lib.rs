@@ -1,7 +1,7 @@
 pub fn greet(name: Option<&str>) -> String {
     match name {
-        Some(n) => format!("Hello, {n}! From release-playground-lib."),
-        None => "Hello from release-playground-lib!".to_string(),
+        Some(n) => format!("Hello, {n}! From release-playground-core."),
+        None => "Hello from release-playground-core!".to_string(),
     }
 }
 

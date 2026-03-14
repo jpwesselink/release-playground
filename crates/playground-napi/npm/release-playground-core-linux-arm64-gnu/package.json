@@ -1,0 +1,11 @@
+{
+  "name": "@jpwesselink/release-playground-core-linux-arm64-gnu",
+  "version": "0.1.0",
+  "description": "playground-core native bindings for Linux ARM64",
+  "os": ["linux"],
+  "cpu": ["arm64"],
+  "main": "release-playground-core.node",
+  "files": ["release-playground-core.node"],
+  "publishConfig": { "access": "public" },
+  "license": "MIT"
+}

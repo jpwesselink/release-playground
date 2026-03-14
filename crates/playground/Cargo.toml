@@ -6,4 +6,4 @@ description = "CLI for release-playground"
 license = "MIT"
 
 [dependencies]
-release-playground-lib = { path = "../playground-lib", version = "0.1.0" }
+release-playground-core = { path = "../playground-core", version = "0.1.0" }

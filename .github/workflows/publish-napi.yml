@@ -1,4 +1,4 @@
-name: Publish CLI npm package
+name: Publish Core npm package
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
         id: version
         shell: bash
         run: |
-          CARGO_VERSION=$(grep '^version' crates/playground/Cargo.toml | head -1 | sed 's/.*"\(.*\)"/\1/')
+          CARGO_VERSION=$(grep '^version' crates/playground-napi/Cargo.toml | head -1 | sed 's/.*"\(.*\)"/\1/')
           SHORT_SHA=$(git rev-parse --short HEAD)
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             PR_NUM=${{ github.event.pull_request.number }}
@@ -35,7 +35,6 @@ jobs:
             echo "version=${CARGO_VERSION}-pr-${PR_NUM}.${SHORT_SHA}" >> "$GITHUB_OUTPUT"
             echo "npm-tag=pr-${PR_NUM}" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "release" ]; then
-            # Strip leading 'v' from tag name (e.g. v0.2.0 -> 0.2.0)
             RELEASE_VERSION=$(echo "${{ github.event.release.tag_name }}" | sed 's/^.*-v//')
             echo "version=${RELEASE_VERSION}" >> "$GITHUB_OUTPUT"
             echo "npm-tag=latest" >> "$GITHUB_OUTPUT"
@@ -62,29 +61,23 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-latest
-            npm_pkg: release-playground-linux-x64-gnu
-            binary: release-playground
+            npm_pkg: release-playground-core-linux-x64-gnu
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-latest
-            npm_pkg: release-playground-linux-arm64-gnu
-            binary: release-playground
+            npm_pkg: release-playground-core-linux-arm64-gnu
             cross: true
           - target: x86_64-apple-darwin
             runner: macos-latest
-            npm_pkg: release-playground-darwin-x64
-            binary: release-playground
+            npm_pkg: release-playground-core-darwin-x64
           - target: aarch64-apple-darwin
             runner: macos-14
-            npm_pkg: release-playground-darwin-arm64
-            binary: release-playground
+            npm_pkg: release-playground-core-darwin-arm64
           - target: x86_64-pc-windows-msvc
             runner: windows-latest
-            npm_pkg: release-playground-win32-x64-msvc
-            binary: release-playground.exe
+            npm_pkg: release-playground-core-win32-x64-msvc
           - target: aarch64-pc-windows-msvc
             runner: windows-latest
-            npm_pkg: release-playground-win32-arm64-msvc
-            binary: release-playground.exe
+            npm_pkg: release-playground-core-win32-arm64-msvc
     steps:
       - uses: actions/checkout@v4
 
@@ -97,18 +90,25 @@ jobs:
         if: matrix.cross
         run: cargo install cross --locked
 
-      - name: Build binary
+      - name: Build native module
         shell: bash
         run: |
           if [ "${{ matrix.cross }}" = "true" ]; then
-            cross build --release --target ${{ matrix.target }} -p release-playground
+            cross build --release --target ${{ matrix.target }} -p release-playground-napi
           else
-            cargo build --release --target ${{ matrix.target }} -p release-playground
+            cargo build --release --target ${{ matrix.target }} -p release-playground-napi
           fi
 
-      - name: Copy binary into npm package
+      - name: Copy .node file into npm package
         shell: bash
-        run: cp target/${{ matrix.target }}/release/${{ matrix.binary }} crates/playground/npm/${{ matrix.npm_pkg }}/
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            cp target/${{ matrix.target }}/release/release_playground_napi.dll crates/playground-napi/npm/${{ matrix.npm_pkg }}/release-playground-core.node
+          elif [ "${{ runner.os }}" = "macOS" ]; then
+            cp target/${{ matrix.target }}/release/librelease_playground_napi.dylib crates/playground-napi/npm/${{ matrix.npm_pkg }}/release-playground-core.node
+          else
+            cp target/${{ matrix.target }}/release/librelease_playground_napi.so crates/playground-napi/npm/${{ matrix.npm_pkg }}/release-playground-core.node
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -117,18 +117,18 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Set npm version
-        working-directory: crates/playground/npm/${{ matrix.npm_pkg }}
+        working-directory: crates/playground-napi/npm/${{ matrix.npm_pkg }}
         shell: bash
         run: npm version --no-git-tag-version --allow-same-version "${{ needs.resolve-version.outputs.version }}"
 
       - name: Publish platform package
-        working-directory: crates/playground/npm/${{ matrix.npm_pkg }}
+        working-directory: crates/playground-napi/npm/${{ matrix.npm_pkg }}
         run: npm publish --tag ${{ needs.resolve-version.outputs.npm-tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-meta:
-    name: Publish meta-package
+    name: Publish @jpwesselink/release-playground-core
     needs: [resolve-version, build]
     if: ${{ always() && needs.build.result != 'cancelled' }}
     runs-on: ubuntu-latest
@@ -142,7 +142,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Set version
-        working-directory: crates/playground/npm/release-playground
+        working-directory: crates/playground-napi
         shell: bash
         run: |
           VERSION="${{ needs.resolve-version.outputs.version }}"
@@ -156,7 +156,7 @@ jobs:
           "
 
       - name: Publish meta-package
-        working-directory: crates/playground/npm/release-playground
+        working-directory: crates/playground-napi
         run: npm publish --tag ${{ needs.resolve-version.outputs.npm-tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
