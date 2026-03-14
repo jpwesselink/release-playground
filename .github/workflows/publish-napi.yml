@@ -1,4 +1,4 @@
-name: Publish NAPI
+name: Publish Core npm package
 
 on:
   push:
