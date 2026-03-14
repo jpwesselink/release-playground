@@ -6,9 +6,8 @@ export default defineConfig({
   base: "/release-playground/",
   title: "release-playground",
   description: "Multi-channel release workflow for Rust CLI + NAPI packages",
-  globalStyles: path.join(__dirname, "docs/v0.1/styles/index.css"),
-  multiVersion: {
-    default: "v0.2",
-    versions: ["v0.1", "v0.2"],
-  },
+  globalStyles: path.join(__dirname, "docs/styles/index.css"),
+  head: [
+    ['script', { src: '/release-playground/version-switcher.js', defer: '' }],
+  ],
 });
