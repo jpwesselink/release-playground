@@ -109,20 +109,23 @@ jobs:
           git diff --cached --quiet || git commit -m "docs: update versions.json"
           git push origin HEAD:gh-pages
 
-      - name: Update latest redirect
-        if: steps.target.outputs.type == 'stable'
+      - name: Update root redirect
+        if: steps.target.outputs.type == 'stable' || steps.target.outputs.type == 'beta'
         run: |
           cd gh-pages-wt
-          cat > index.html << 'REDIRECT'
+          # Always update on stable; on beta, only if no index.html exists yet
+          if [ "${{ steps.target.outputs.type }}" = "stable" ] || [ ! -f index.html ]; then
+            cat > index.html << REDIRECT
           <!DOCTYPE html>
           <html>
           <head><meta http-equiv="refresh" content="0; url=${{ steps.target.outputs.subdir }}/"></head>
           <body><a href="${{ steps.target.outputs.subdir }}/">Redirecting...</a></body>
           </html>
           REDIRECT
-          git add index.html
-          git diff --cached --quiet || git commit -m "docs: update latest redirect to ${{ steps.target.outputs.subdir }}"
-          git push origin HEAD:gh-pages
+            git add index.html
+            git diff --cached --quiet || git commit -m "docs: update root redirect to ${{ steps.target.outputs.subdir }}"
+            git push origin HEAD:gh-pages
+          fi
 
       - name: Comment PR with docs link
         if: github.event_name == 'pull_request'
