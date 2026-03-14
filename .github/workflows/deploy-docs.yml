@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.event.action != 'closed'
+    if: github.event.action != 'closed' && (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'release-playground-v'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

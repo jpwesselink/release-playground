@@ -16,6 +16,7 @@ on:
 jobs:
   resolve-version:
     name: Resolve version
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'release-playground-core-v')
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -130,7 +131,7 @@ jobs:
   publish-meta:
     name: Publish @jpwesselink/release-playground-core
     needs: [resolve-version, build]
-    if: ${{ always() && needs.build.result != 'cancelled' }}
+    if: always() && needs.resolve-version.result == 'success' && needs.build.result != 'cancelled'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
