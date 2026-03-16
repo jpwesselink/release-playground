@@ -9,6 +9,11 @@
     "label": "beta (0.1.1)",
     "path": "/beta/"
   },
-  "prs": [],
+  "prs": [
+    {
+      "label": "#9 fix/remove-platform-bin-fields",
+      "path": "/pr-9/"
+    }
+  ],
   "latest": "/v0.1.1/"
 }
